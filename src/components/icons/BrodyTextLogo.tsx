@@ -3,7 +3,7 @@ import React from "react";
 const BRAND_NAME = "Brody";
 const BRAND_TAGLINE = "UZBEK STT";
 
-const HandyTextLogo = ({
+const BrodyTextLogo = ({
   width,
   height,
   className,
@@ -60,4 +60,4 @@ const HandyTextLogo = ({
   );
 };
 
-export default HandyTextLogo;
+export default BrodyTextLogo;
