@@ -127,6 +127,47 @@ pub fn check_apple_intelligence_available() -> bool {
     }
 }
 
+/// Check macOS Accessibility permission through Brody's backend.
+/// This avoids stale frontend plugin state after the user toggles System Settings.
+#[specta::specta]
+#[tauri::command]
+pub async fn check_macos_accessibility_permission() -> Result<bool, String> {
+    #[cfg(target_os = "macos")]
+    {
+        Ok(tauri_plugin_macos_permissions::check_accessibility_permission().await)
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        Ok(true)
+    }
+}
+
+/// Request macOS Accessibility permission and open the exact Privacy pane.
+/// Returns the current trusted state after requesting.
+#[specta::specta]
+#[tauri::command]
+pub async fn request_macos_accessibility_permission(app: AppHandle) -> Result<bool, String> {
+    #[cfg(target_os = "macos")]
+    {
+        tauri_plugin_macos_permissions::request_accessibility_permission().await;
+        if let Err(e) = app.opener().open_url(
+            "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility",
+            None::<String>,
+        ) {
+            log::warn!("Failed to open Accessibility settings: {}", e);
+        }
+
+        Ok(tauri_plugin_macos_permissions::check_accessibility_permission().await)
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    {
+        let _ = app;
+        Ok(true)
+    }
+}
+
 /// Try to initialize Enigo (keyboard/mouse simulation).
 /// On macOS, this will return an error if accessibility permissions are not granted.
 #[specta::specta]

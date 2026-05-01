@@ -2,13 +2,15 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { platform } from "@tauri-apps/plugin-os";
 import {
-  checkAccessibilityPermission,
-  requestAccessibilityPermission,
   checkMicrophonePermission,
   requestMicrophonePermission,
 } from "tauri-plugin-macos-permissions-api";
 import { toast } from "sonner";
 import { commands } from "@/bindings";
+import {
+  checkBrodyAccessibilityPermission,
+  requestBrodyAccessibilityPermission,
+} from "@/lib/utils/macosPermissions";
 import { useSettingsStore } from "@/stores/settingsStore";
 import BrodyTextLogo from "../icons/BrodyTextLogo";
 import { Keyboard, Mic, Check, Loader2 } from "lucide-react";
@@ -96,7 +98,7 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
       if (nextPlatform === "macos") {
         try {
           const [accessibilityGranted, microphoneGranted] = await Promise.all([
-            checkAccessibilityPermission(),
+            checkBrodyAccessibilityPermission(),
             checkMicrophonePermission(),
           ]);
 
@@ -183,7 +185,7 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
         }
 
         const [accessibilityGranted, microphoneGranted] = await Promise.all([
-          checkAccessibilityPermission(),
+          checkBrodyAccessibilityPermission(),
           checkMicrophonePermission(),
         ]);
 
@@ -249,7 +251,7 @@ const AccessibilityOnboarding: React.FC<AccessibilityOnboardingProps> = ({
 
   const handleGrantAccessibility = async () => {
     try {
-      await requestAccessibilityPermission();
+      await requestBrodyAccessibilityPermission();
       setPermissions((prev) => ({ ...prev, accessibility: "waiting" }));
       startPolling();
     } catch (error) {
