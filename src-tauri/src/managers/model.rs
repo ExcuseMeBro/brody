@@ -124,6 +124,33 @@ impl ModelManager {
 
         // TODO this should be read from a JSON file or something..
         available_models.insert(
+            "rubaistt-v2-medium".to_string(),
+            ModelInfo {
+                id: "rubaistt-v2-medium".to_string(),
+                name: "rubaiSTT v2 Medium".to_string(),
+                description: "Primary Uzbek speech-to-text model. Fine-tuned Whisper Medium for Uzbek and Tashkent dialect audio.".to_string(),
+                filename: "rubaistt-v2-medium-q5_0.bin".to_string(),
+                url: Some(
+                    "https://github.com/ExcuseMeBro/brody/releases/download/models/rubaistt-v2-medium-q5_0.bin".to_string(),
+                ),
+                sha256: None,
+                size_mb: 514,
+                is_downloaded: false,
+                is_downloading: false,
+                partial_size: 0,
+                is_directory: false,
+                engine_type: EngineType::Whisper,
+                accuracy_score: 0.92,
+                speed_score: 0.58,
+                supports_translation: false,
+                is_recommended: true,
+                supported_languages: vec!["uz".to_string()],
+                supports_language_selection: false,
+                is_custom: false,
+            },
+        );
+
+        available_models.insert(
             "small".to_string(),
             ModelInfo {
                 id: "small".to_string(),
@@ -198,7 +225,7 @@ impl ModelManager {
                 accuracy_score: 0.80,
                 speed_score: 0.40,
                 supports_translation: false, // Turbo doesn't support translation
-                is_recommended: true,
+                is_recommended: false,
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,

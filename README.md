@@ -4,11 +4,18 @@ Brody — offline desktop speech-to-text app. Default language: Uzbek (`uz`).
 
 Based on open-source local STT stack. Audio stays on your computer.
 
+## Uzbek STT model
+
+Default target model: [rubaiSTT v2 Medium](https://huggingface.co/islomov/rubaistt_v2_medium).
+
+It is a Whisper Medium model fine-tuned for Uzbek speech, with strong focus on Tashkent dialect and local Uzbek audio.
+
 ## Features
 
 - Offline speech-to-text
 - Uzbek selected by default
-- Whisper, Parakeet, Canary, Moonshine and other local models
+- rubaiSTT v2 Medium as primary Uzbek STT model
+- Whisper GGML local models
 - Custom Whisper GGML `.bin` model import
 - Global shortcut recording
 - Clipboard paste into active app

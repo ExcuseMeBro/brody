@@ -5,10 +5,12 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 6px;
-  background: #000000cc;
+  background: linear-gradient(135deg, #010914e6, #062a42e6);
+  border: 1px solid #19d8f440;
+  box-shadow: 0 10px 30px #0b83f244;
   border-radius: 18px;
   opacity: 0;
-  transition: opacity 300ms ease-out;
+  transition: opacity 300ms cubic-bezier(0.32, 0.72, 0, 1);
   box-sizing: border-box;
 }
 
@@ -41,10 +43,10 @@
 
 .bar {
   width: 6px;
-  background: #ffe5ee;
+  background: linear-gradient(180deg, #21e7f2, #0b83f2);
   max-height: 20px;
-  border-radius: 2px;
-  transition: height 80ms linear;
+  border-radius: 999px;
+  transition: height 80ms cubic-bezier(0.32, 0.72, 0, 1);
   min-height: 4px;
 }
 
@@ -86,7 +88,7 @@
 }
 
 .cancel-button:hover {
-  background: #faa2ca33;
+  background: #14d8f233;
   transform: scale(1.05);
 }
 
