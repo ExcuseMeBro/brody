@@ -40,6 +40,7 @@ interface ModelsStore {
   loadCurrentModel: () => Promise<void>;
   checkFirstRun: () => Promise<boolean>;
   selectModel: (modelId: string) => Promise<boolean>;
+  importCustomModel: (path: string) => Promise<ModelInfo | null>;
   downloadModel: (modelId: string) => Promise<boolean>;
   cancelDownload: (modelId: string) => Promise<boolean>;
   deleteModel: (modelId: string) => Promise<boolean>;
@@ -161,6 +162,22 @@ export const useModelStore = create<ModelsStore>()(
       } catch (err) {
         set({ error: `Failed to switch to model: ${err}` });
         return false;
+      }
+    },
+
+    importCustomModel: async (path: string) => {
+      try {
+        set({ error: null });
+        const result = await commands.importCustomWhisperModel(path);
+        if (result.status === "ok") {
+          await get().loadModels();
+          return result.data;
+        }
+        set({ error: `Failed to import custom model: ${result.error}` });
+        return null;
+      } catch (err) {
+        set({ error: `Failed to import custom model: ${err}` });
+        return null;
       }
     },
 

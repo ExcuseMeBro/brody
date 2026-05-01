@@ -391,6 +391,7 @@ pub fn run(cli_args: CliArgs) {
             commands::initialize_shortcuts,
             commands::models::get_available_models,
             commands::models::get_model_info,
+            commands::models::import_custom_whisper_model,
             commands::models::download_model,
             commands::models::delete_model,
             commands::models::cancel_download,
@@ -512,7 +513,7 @@ pub fn run(cli_args: CliArgs) {
             // for portable mode (redirects WebView2 cache to portable Data dir)
             let mut win_builder =
                 tauri::WebviewWindowBuilder::new(app, "main", tauri::WebviewUrl::App("/".into()))
-                    .title("Handy")
+                    .title("Brody")
                     .inner_size(680.0, 570.0)
                     .min_inner_size(680.0, 570.0)
                     .resizable(true)

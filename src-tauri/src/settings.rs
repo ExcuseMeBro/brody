@@ -457,7 +457,7 @@ fn default_update_checks_enabled() -> bool {
 }
 
 fn default_selected_language() -> String {
-    "auto".to_string()
+    "uz".to_string()
 }
 
 fn default_overlay_position() -> OverlayPosition {
@@ -779,7 +779,7 @@ pub fn get_default_settings() -> AppSettings {
         clamshell_microphone: None,
         selected_output_device: None,
         translate_to_english: false,
-        selected_language: "auto".to_string(),
+        selected_language: default_selected_language(),
         overlay_position: default_overlay_position(),
         debug_mode: false,
         log_level: default_log_level(),

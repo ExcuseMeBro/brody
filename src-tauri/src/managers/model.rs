@@ -198,7 +198,7 @@ impl ModelManager {
                 accuracy_score: 0.80,
                 speed_score: 0.40,
                 supports_translation: false, // Turbo doesn't support translation
-                is_recommended: false,
+                is_recommended: true,
                 supported_languages: whisper_languages.clone(),
                 supports_language_selection: true,
                 is_custom: false,
@@ -318,7 +318,7 @@ impl ModelManager {
                 accuracy_score: 0.80,
                 speed_score: 0.85,
                 supports_translation: false,
-                is_recommended: true,
+                is_recommended: false,
                 supported_languages: parakeet_v3_languages,
                 supports_language_selection: false,
                 is_custom: false,
@@ -646,6 +646,88 @@ impl ModelManager {
     pub fn get_model_info(&self, model_id: &str) -> Option<ModelInfo> {
         let models = self.available_models.lock().unwrap();
         models.get(model_id).cloned()
+    }
+
+    pub fn import_custom_whisper_model(&self, source_path: &str) -> Result<ModelInfo> {
+        let source_path = PathBuf::from(source_path);
+
+        if !source_path.is_file() {
+            return Err(anyhow::anyhow!("Custom model file not found"));
+        }
+
+        let filename = source_path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .ok_or_else(|| anyhow::anyhow!("Custom model filename is invalid"))?
+            .to_string();
+
+        if filename.starts_with('.') || !filename.ends_with(".bin") {
+            return Err(anyhow::anyhow!(
+                "Custom Whisper model must be a visible .bin file"
+            ));
+        }
+
+        {
+            let models = self.available_models.lock().unwrap();
+            let reserved_filenames: HashSet<String> = models
+                .values()
+                .filter(|model| {
+                    matches!(model.engine_type, EngineType::Whisper) && !model.is_custom
+                })
+                .map(|model| model.filename.clone())
+                .collect();
+
+            if reserved_filenames.contains(&filename) {
+                return Err(anyhow::anyhow!(
+                    "This filename is reserved for an official model"
+                ));
+            }
+        }
+
+        let mut destination_filename = filename.clone();
+        let mut destination_path = self.models_dir.join(&destination_filename);
+
+        let source_canonical = fs::canonicalize(&source_path)?;
+        let mut copied = false;
+
+        if destination_path.exists() {
+            if fs::canonicalize(&destination_path).ok().as_ref() != Some(&source_canonical) {
+                let stem = filename.trim_end_matches(".bin");
+                let mut index = 1;
+                loop {
+                    destination_filename = format!("{}-{}.bin", stem, index);
+                    destination_path = self.models_dir.join(&destination_filename);
+                    if !destination_path.exists() {
+                        break;
+                    }
+                    index += 1;
+                }
+            }
+        }
+
+        if !destination_path.exists() {
+            fs::copy(&source_path, &destination_path)?;
+            copied = true;
+        }
+
+        let model_id = destination_filename.trim_end_matches(".bin").to_string();
+        let mut models = self.available_models.lock().unwrap();
+        Self::discover_custom_whisper_models(&self.models_dir, &mut models)?;
+
+        match models.get(&model_id).cloned() {
+            Some(model) => {
+                if copied {
+                    info!(
+                        "Imported custom Whisper model: {} ({})",
+                        model.id, model.filename
+                    );
+                }
+                Ok(model)
+            }
+            None => Err(anyhow::anyhow!(
+                "Custom model was copied but could not be discovered"
+            )),
+        }
     }
 
     fn migrate_bundled_models(&self) -> Result<()> {

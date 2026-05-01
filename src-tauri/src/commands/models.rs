@@ -23,6 +23,17 @@ pub async fn get_model_info(
 
 #[tauri::command]
 #[specta::specta]
+pub async fn import_custom_whisper_model(
+    model_manager: State<'_, Arc<ModelManager>>,
+    path: String,
+) -> Result<ModelInfo, String> {
+    model_manager
+        .import_custom_whisper_model(&path)
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub async fn download_model(
     app_handle: AppHandle,
     model_manager: State<'_, Arc<ModelManager>>,

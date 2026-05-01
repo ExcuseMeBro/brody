@@ -554,6 +554,14 @@ async getModelInfo(modelId: string) : Promise<Result<ModelInfo | null, string>> 
     else return { status: "error", error: e  as any };
 }
 },
+async importCustomWhisperModel(path: string) : Promise<Result<ModelInfo, string>> {
+    try {
+    return { status: "ok", data: await TAURI_INVOKE("import_custom_whisper_model", { path }) };
+} catch (e) {
+    if(e instanceof Error) throw e;
+    else return { status: "error", error: e  as any };
+}
+},
 async downloadModel(modelId: string) : Promise<Result<null, string>> {
     try {
     return { status: "ok", data: await TAURI_INVOKE("download_model", { modelId }) };
