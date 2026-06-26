@@ -1,107 +1,74 @@
-# Brody
+# 🎙️ RubaiSTT Dictation — O'zbekcha ovozli yozuv (macOS)
 
-Brody — offline desktop speech-to-text app. Default language: Uzbek (`uz`).
+Istalgan ilovada (Telegram, Messages, brauzer, hujjat — qayerda kursor bo'lsa) **⌃⌥D** bosib o'zbekcha gapiring — matn avtomatik o'sha joyga lotin alifbosida yoziladi.
 
-Based on open-source local STT stack. Audio stays on your computer.
+macOS'ning o'rnatilgan diktovkasi kabi, lekin **o'zbek tili uchun maxsus**, **butunlay oflayn** (internetsiz), va **bepul**.
 
-## Uzbek STT model
+> System-wide Uzbek speech-to-text dictation for macOS. Press **⌃⌥D** anywhere, speak Uzbek, and the transcribed text is typed into the focused field. Powered by the [rubaiSTT](https://huggingface.co/islomov/rubaistt_v2_medium) model running locally via [whisper.cpp](https://github.com/ggml-org/whisper.cpp) with Metal acceleration. Fully offline.
 
-Default target model: [rubaiSTT v2 Medium](https://huggingface.co/islomov/rubaistt_v2_medium).
+---
 
-It is a Whisper Medium model fine-tuned for Uzbek speech, with strong focus on Tashkent dialect and local Uzbek audio.
+## ✨ Xususiyatlar / Features
 
-## Features
+- 🌐 **Tizim bo'ylab** — istalgan ilovada ishlaydi (global hotkey **⌃⌥D**)
+- 🇺🇿 **O'zbek tiliga maxsus** — `rubaiSTT v2 medium` modeli, lotin alifbosi
+- ⚡ **Metal tezlashtirish** — Apple Silicon GPU'da tez ishlaydi
+- 🔌 **To'liq oflayn** — hech qanday server/internet kerak emas, ovoz qurilmangizdan chiqmaydi
+- 🪶 **Yengil** — menyu-bar ilovasi; model 3 daqiqa ishlatilmasa RAM'dan bo'shaydi
 
-- Offline speech-to-text
-- Uzbek selected by default
-- rubaiSTT v2 Medium as primary Uzbek STT model
-- Whisper GGML local models
-- Custom Whisper GGML `.bin` model import
-- Global shortcut recording
-- Clipboard paste into active app
-- macOS, Windows, Linux support
+## 📋 Talablar / Requirements
 
-## Custom model
+- macOS 13+ (**Apple Silicon** — M1/M2/M3/M4/M5)
+- [Homebrew](https://brew.sh)
+- Xcode Command Line Tools (`xcode-select --install`)
+- ~2 GB disk (model 1.5 GB)
 
-1. Open **Settings → Models**.
-2. Click **Import Custom Model**.
-3. Select Whisper GGML `.bin` file.
-4. Select imported model and start transcription.
-
-Manual option: put `.bin` file into app data `models` folder, then restart Brody.
-
-## Development
-
-Requirements:
-
-- Rust stable
-- Bun
-- CMake
-
-Install:
+## 🚀 O'rnatish / Install
 
 ```bash
-bun install
+git clone https://github.com/MuhammadMirrr/uzbek-dictation.git
+cd uzbek-dictation
+./setup.sh
 ```
 
-Run frontend:
+`setup.sh` avtomatik: kerakli vositalarni o'rnatadi → whisper.cpp'ni Metal bilan build qiladi → modelni yuklaydi → ilovani build qilib o'rnatadi → login'da avto-ishga tushishni sozlaydi.
 
-```bash
-bun run dev
-```
+### Oxirgi qadam — Accessibility ruxsati
 
-Run desktop app:
+Matn avtomatik joylashishi uchun (⌘V yuborish) bir marta ruxsat bering:
 
-```bash
-bun run tauri dev
-```
+1. **System Settings → Privacy & Security → Accessibility**
+2. **"RubaiSTT Dictation"** ni qo'shing (`+`) va **yoqing** ✅
 
-Build frontend:
+Birinchi yozishda **mikrofon** ruxsati ham so'raladi — ruxsat bering.
 
-```bash
-bun run build
-```
+## 🎯 Ishlatish / Usage
 
-Build app:
+1. Istalgan joyda kursorni yozish maydoniga qo'ying
+2. **⌃⌥D** bosing → 🔴 gapiring → **⌃⌥D** yana bosing
+3. Matn o'sha joyga yoziladi
 
-```bash
-bun run tauri build
-```
+Menyu-bardagi 🎙️ ikonadan ham boshqarish mumkin.
 
-## Dev model setup
+## ⚠️ Eslatma / Notes
 
-VAD model needed for local development:
+- Ilova **ad-hoc imzolangan** (Apple Developer sertifikati yo'q). Shuning uchun manbadan build qilinadi — `setup.sh` lokal build qiladi, Gatekeeper bloklamaydi.
+- Faqat **Apple Silicon** (Metal). Intel Mac'lar sinalmagan.
 
-```bash
-mkdir -p src-tauri/resources/models
-curl -o src-tauri/resources/models/silero_vad_v4.onnx "$VAD_MODEL_URL"
-```
+## 🛠 Texnik tafsilotlar
 
-## CLI
+- **Model:** [`islomov/rubaistt_v2_medium`](https://huggingface.co/islomov/rubaistt_v2_medium) → ggml (f16) ga o'girilgan
+- **Inference:** whisper.cpp + Metal, beam search (maksimal aniqlik)
+- **Til:** `uz`, lotin alifbosi
+- **UI:** Swift / AppKit, menyu-bar (LSUIElement), global hotkey Carbon orqali
+- **Matn kiritish:** clipboard + ⌘V (CGEvent) — Accessibility ruxsati kerak
 
-```bash
-brody --toggle-transcription
-brody --toggle-post-process
-brody --cancel
-brody --start-hidden
-brody --no-tray
-brody --debug
-```
+## 📄 Litsenziya
 
-macOS app bundle:
+MIT (`LICENSE`). Model va whisper.cpp o'z litsenziyalari ostida.
 
-```bash
-/Applications/Brody.app/Contents/MacOS/Brody --toggle-transcription
-```
+## 🙏 Minnatdorchilik
 
-## App data
-
-Typical paths:
-
-- macOS: `~/Library/Application Support/uz.brodev.brody/`
-- Windows: `%APPDATA%/uz.brodev.brody/`
-- Linux: `~/.config/uz.brodev.brody/`
-
-## License
-
-MIT
+- [rubaiSTT](https://huggingface.co/islomov/rubaistt_v2_medium) — Sardor Islomov (o'zbek STT modeli)
+- [whisper.cpp](https://github.com/ggml-org/whisper.cpp) — Georgi Gerganov
+- [OpenAI Whisper](https://github.com/openai/whisper)
