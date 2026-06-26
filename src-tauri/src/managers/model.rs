@@ -271,7 +271,7 @@ impl ModelManager {
                     .to_string(),
                 filename: "ggml-rubaistt-v2-medium.bin".to_string(),
                 url: Some(
-                    "https://github.com/MuhammadMirrr/uzbek-dictation/releases/download/v1.0/ggml-rubaistt.bin"
+                    "https://github.com/ExcuseMeBro/brody/releases/download/model-v2/ggml-rubaistt-v2-medium.bin"
                         .to_string(),
                 ),
                 sha256: Some(
@@ -286,7 +286,7 @@ impl ModelManager {
                 accuracy_score: 0.78,
                 speed_score: 0.60,
                 supports_translation: false,
-                is_recommended: false,
+                is_recommended: true,
                 supported_languages: vec!["uz".to_string()],
                 supports_language_selection: false,
                 is_custom: false,
@@ -351,7 +351,7 @@ impl ModelManager {
                 accuracy_score: 0.80,
                 speed_score: 0.85,
                 supports_translation: false,
-                is_recommended: true,
+                is_recommended: false,
                 supported_languages: parakeet_v3_languages,
                 supports_language_selection: false,
                 is_custom: false,
